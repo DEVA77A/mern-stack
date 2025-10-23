@@ -9,9 +9,10 @@
     "preview": "vite preview --port 5174"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "gsap": "^3.12.5",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "gsap": "^3.12.5"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.4",

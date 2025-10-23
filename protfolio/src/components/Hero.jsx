@@ -2,12 +2,25 @@ import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 function splitText(element) {
-	const text = element.textContent
+	const text = element.textContent || ''
 	element.textContent = ''
 	const frag = document.createDocumentFragment()
-	text.split('').forEach((ch) => {
+	const chars = text.split('')
+	chars.forEach((ch, i) => {
 		const span = document.createElement('span')
-		span.textContent = ch
+		if (ch === ' ') {
+			// Preserve spaces, but remove extra gap right after a comma ("Hi, …")
+			const prev = chars[i - 1]
+			span.innerHTML = '&nbsp;'
+			if (prev === ',') {
+				// no extra margin after comma space
+				span.style.marginRight = '0'
+			} else {
+				span.style.marginRight = '0.15em'
+			}
+		} else {
+			span.textContent = ch
+		}
 		span.style.display = 'inline-block'
 		span.style.willChange = 'transform, opacity'
 		frag.appendChild(span)
@@ -20,19 +33,22 @@ export default function Hero() {
 
 	useEffect(() => {
 		const el = ref.current
-		const title = el.querySelector('.hero-title')
+		const titleLine = el.querySelector('.hero-title-primary')
+		const subline = el.querySelector('.hero-title-subline')
 		const subtitle = el.querySelector('.hero-sub')
-		splitText(title)
+		// Animate only the first line characters
+		if (titleLine) splitText(titleLine)
 
 		const tl = gsap.timeline()
-		tl.from(title.querySelectorAll('span'), {
+		tl.from(titleLine ? titleLine.querySelectorAll('span') : [], {
 			yPercent: 120,
 			opacity: 0,
 			stagger: 0.03,
 			ease: 'expo.out',
 			duration: 1.1
 		})
-			.from(subtitle, { opacity: 0, y: 16, duration: 0.7 }, '-=0.6')
+			.from(subline, { opacity: 0, y: 10, duration: 0.6 }, '-=0.6')
+			.from(subtitle, { opacity: 0, y: 16, duration: 0.7 }, '-=0.5')
 			.from('.floating', { y: -10, opacity: 0, stagger: 0.1 }, '-=0.5')
 
 		gsap.to('.floating', {
@@ -52,10 +68,11 @@ export default function Hero() {
 				}} />
 			</div>
 
-			<div className="max-w-6xl mx-auto px-6 text-center pt-24">
-				<h1 className="hero-title text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
-					Hi, I’m Devanand A 👋 — <span className="text-neon">Aspiring AI/ML Engineer</span>
-				</h1>
+					<div className="max-w-6xl mx-auto px-6 text-center pt-24 relative z-10">
+						<h1 className="hero-title font-extrabold tracking-tight leading-[1.15]">
+							<span className="hero-title-primary word-space tracking-wide block text-4xl sm:text-6xl lg:text-7xl">Hi, I’m Devanand A</span>
+							<span className="hero-title-subline block mt-2 text-neon neon-text opacity-100 relative z-10 text-2xl sm:text-3xl">Aspiring AI/ML Engineer</span>
+						</h1>
 				<p className="hero-sub mt-6 text-white/70 text-lg max-w-2xl mx-auto">
 					I craft intelligent systems, sleek UIs, and fluid motion. Futuristic. Fast. Functional.
 				</p>

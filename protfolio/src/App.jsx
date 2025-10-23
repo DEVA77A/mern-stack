@@ -16,19 +16,25 @@ export default function App() {
 
 	useLayoutEffect(() => {
 		const ctx = gsap.context(() => {
-			gsap.from('.page', { opacity: 0, duration: 0.6 })
-			gsap.utils.toArray('.section').forEach((sec) => {
-				gsap.to(sec, {
-					backgroundPositionY: '+=120',
-					ease: 'none',
-					scrollTrigger: {
-						trigger: sec,
-						start: 'top bottom',
-						end: 'bottom top',
-						scrub: true,
-					}
+			// Fade in the root container explicitly to avoid GSAP selector warnings
+			if (containerRef.current) {
+				gsap.from(containerRef.current, { opacity: 0, duration: 0.6 })
+			}
+			const sections = gsap.utils.toArray('.section')
+			if (sections && sections.length) {
+				sections.forEach((sec) => {
+					gsap.to(sec, {
+						backgroundPositionY: '+=120',
+						ease: 'none',
+						scrollTrigger: {
+							trigger: sec,
+							start: 'top bottom',
+							end: 'bottom top',
+							scrub: true,
+						}
+					})
 				})
-			})
+			}
 		}, containerRef)
 		return () => ctx.revert()
 	}, [])
