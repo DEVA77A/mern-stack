@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
+import { useEffect } from 'react'
 
 const Form = () => {
     const [form ,setform]=useState({
@@ -7,7 +8,11 @@ const Form = () => {
         email:"",
         age:"",
         department:""
+
     })
+    useEffect(()=>{
+          console.log("from useEffect");
+        })
     const handlechange=(e)=>{
         const {name,value}=e.target      
         setform((prev)=>({
